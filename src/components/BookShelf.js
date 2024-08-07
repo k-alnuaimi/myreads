@@ -1,6 +1,6 @@
 import Book from "./Book"
 
-const BookShelf = ({shelfName,shelfBooks,shelfProperName,libraryShelfChangeHandler})=>{
+const BookShelf = ({shelfBooks,shelfProperName,libraryShelfChangeHandler})=>{
 
    
 
@@ -15,11 +15,8 @@ const BookShelf = ({shelfName,shelfBooks,shelfProperName,libraryShelfChangeHandl
                 return <li key={book.id}>
                     <Book
                     shelfChangeHandler={libraryShelfChangeHandler}
-                    title={book.title}
-                    authors={book.authors}
-                    shelf={shelfName}
-                    backgroundImage={book.imageLinks.thumbnail}
-                    id={book.id}
+                    book={book}
+                    shel
                     
                     />
                 </li>

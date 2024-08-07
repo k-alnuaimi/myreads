@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { getAll, update } from './BooksAPI';
+import { getAll, search, update } from './BooksAPI';
 import Book from './components/Book';
 import BookShelf from './components/BookShelf';
 
@@ -9,6 +9,8 @@ import BookShelf from './components/BookShelf';
 function App() {
   const [showSearchPage, setShowSearchpage] = useState(false);
   const [books,setBooks] = useState()
+  const [searchBooks,setSearchBooks] = useState(null)
+  const [query,setQuery] = useState('')
 
   useEffect(()=>{
 
@@ -22,18 +24,60 @@ function App() {
     getAllBooks()
   },[])
 
-  const handleShelfChange = async(bookId,desiredShelf)=>{
-    setBooks(books.map(book=>
-      book.id == bookId ? {...book,shelf: desiredShelf}:book
-    )
-    )
-    await update(books.find(book=>book.id == bookId),desiredShelf)
+  useEffect(()=>{
 
-    
+    const SearchBooks = async ()=>{
+
+      
+        const searchBooksResult = await search(query,20)
+        if(searchBooksResult !=null && !('error' in searchBooksResult))
+        setSearchBooks(searchBooksResult)
+    }
+
+    if(query!=""){
+      SearchBooks()
+    }else if (query ==""){
+      setSearchBooks(null)
+    }
+
+  },[query])
+
+  const handleShelfChangeExisting = async(bookToModify,desiredShelf)=>{
+    setBooks(books.map(book=>
+      book.id == bookToModify.id ? {...book,shelf: desiredShelf}:book
+    )
+    )
+    await update(books.find(book=>book.id == bookToModify.id),desiredShelf)
+  }
+  const handleShelfChangeNew = async(bookToModify,desiredShelf)=>{
+    bookToModify.shelf = desiredShelf
+    setBooks(books=>[...books,bookToModify])
+    await update(bookToModify,desiredShelf)
+  }
+
+  const getSearchBooks = ()=>{
+    if (searchBooks!=null ){
+      return(
+        searchBooks.map((book)=>
+        {
+          const shelf = books.find(b=>b.id == book.id)?books.find(b=>b.id == book.id).shelf : 'none'
+          book.shelf = shelf
+          return (<Book
+            key={book.id}
+            book={book}
+            shelfChangeHandler={handleShelfChangeNew}
+            />)
+        }
+        )
+      )
+
+    }
 
   }
 
+  console.log(books)
 
+  
 
   return (
     <div className="app">
@@ -49,12 +93,18 @@ function App() {
             <div className="search-books-input-wrapper">
               <input
                 type="text"
+                value={query}
+                onChange={(e)=>setQuery(e.target.value)}
                 placeholder="Search by title, author, or ISBN"
               />
             </div>
           </div>
           <div className="search-books-results">
-            <ol className="books-grid"></ol>
+            <ol className="books-grid">
+              {
+               getSearchBooks()
+              }
+            </ol>
           </div>
         </div>
       ) : (
@@ -65,20 +115,17 @@ function App() {
           <div className="list-books-content">
             <div>
               <BookShelf
-              libraryShelfChangeHandler={handleShelfChange}
+              libraryShelfChangeHandler={handleShelfChangeExisting}
               shelfProperName="Currently Reading" 
-              shelfName="currentlyReading" 
-              shelfBooks={books &&books.filter((book)=> book.shelf == "currentlyReading")}/>
+              shelfBooks={books &&books.filter((book)=> book.shelf === "currentlyReading")}/>
               <BookShelf 
-              libraryShelfChangeHandler={handleShelfChange}
+              libraryShelfChangeHandler={handleShelfChangeExisting}
               shelfProperName="Want To Read" 
-              shelfName="wantToRead" 
-              shelfBooks={books &&books.filter((book)=> book.shelf == "wantToRead")}/>
+              shelfBooks={books &&books.filter((book)=> book.shelf === "wantToRead")}/>
               <BookShelf 
-             libraryShelfChangeHandler={handleShelfChange}
+             libraryShelfChangeHandler={handleShelfChangeExisting}
               shelfProperName="Read" 
-              shelfName="read" 
-              shelfBooks={books &&books.filter((book)=> book.shelf == "read")}/>
+              shelfBooks={books &&books.filter((book)=> book.shelf === "read")}/>
             </div>
           </div>
           <div className="open-search">
