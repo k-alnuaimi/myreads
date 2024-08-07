@@ -2,7 +2,6 @@ import * as ReactDOMClient from 'react-dom/client';
 import App from './routes/App';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import SearchPage from './routes/SearchPage';
 
 
 

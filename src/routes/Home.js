@@ -9,10 +9,10 @@ const Home = ({books,setBooks})=>{
 
     const handleShelfChangeExisting = async(bookToModify,desiredShelf)=>{
         setBooks(books.map(book=>
-          book.id == bookToModify.id ? {...book,shelf: desiredShelf}:book
+          book.id === bookToModify.id ? {...book,shelf: desiredShelf}:book
         )
         )
-        await update(books.find(book=>book.id == bookToModify.id),desiredShelf)
+        await update(books.find(book=>book.id === bookToModify.id),desiredShelf)
       }
 
     return (

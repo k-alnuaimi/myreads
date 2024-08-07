@@ -19,7 +19,7 @@ const SearchPage = ({books,setBooks})=>{
             setSearchBooks(searchBooksResult)
         }
     
-        if(query == "")
+        if(query === "")
           setSearchBooks(null)
         else
         SearchBooks()
@@ -27,10 +27,11 @@ const SearchPage = ({books,setBooks})=>{
       },[query])
     const getSearchBooks = ()=>{
         if (searchBooks!=null ){
+            console.log(searchBooks)
           return(
             searchBooks.map((book)=>
             {
-              const shelf = books.find(b=>b.id == book.id)?books.find(b=>b.id == book.id).shelf : 'none'
+              const shelf = books.find(b=>b.id === book.id)?books.find(b=>b.id === book.id).shelf : 'none'
               book.shelf = shelf
               return (<Book
                 key={book.id}
@@ -46,9 +47,18 @@ const SearchPage = ({books,setBooks})=>{
       }
 
       const handleShelfChangeNew = async(bookToModify,desiredShelf)=>{
-        bookToModify.shelf = desiredShelf
-        setBooks(books=>[...books,bookToModify])
-        await update(bookToModify,desiredShelf)
+        if(books.find(b=>b.id == bookToModify.id) ==null){
+            bookToModify.shelf = desiredShelf
+            setBooks(books=>[...books,bookToModify])
+            await update(bookToModify,desiredShelf)
+        }else{
+            setBooks(books.map(book=>
+                book.id === bookToModify.id ? {...book,shelf: desiredShelf}:book
+              )
+              )
+              await update(bookToModify,desiredShelf)
+        }
+     
       }
 
     return(

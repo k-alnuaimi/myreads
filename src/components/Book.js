@@ -1,4 +1,3 @@
-import { useState } from "react";
 const Book = ({
     book,
     shelfChangeHandler
@@ -28,7 +27,7 @@ const Book = ({
               </option>
               <option value="wantToRead" >Want to Read</option>
               <option value="read" >Read</option>
-            {book.shelf !='none' &&<option value="none" >None</option>}  
+            {book.shelf !=='none' &&<option value="none" >None</option>}  
             </select> 
           </div> 
         </div>

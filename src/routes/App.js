@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import '../App.css';
-import { getAll, search, update } from '../BooksAPI';
-import Book from '../components/Book';
-import BookShelf from '../components/BookShelf';
+import { getAll} from '../BooksAPI';
 import SearchPage from './SearchPage';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Home from './Home';
 
 
