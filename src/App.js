@@ -34,11 +34,10 @@ function App() {
         setSearchBooks(searchBooksResult)
     }
 
-    if(query!=""){
-      SearchBooks()
-    }else if (query ==""){
+    if(query == "")
       setSearchBooks(null)
-    }
+    else
+    SearchBooks()
 
   },[query])
 
